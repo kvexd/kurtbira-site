@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    background: #000;
+    font-family: 'PT Serif', serif;
+    font-weight: 700; 
+    font-style: italic;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #00FF00;
+}
+
+.counter {
+    margin-bottom: 15px;
+    font-size: 1.7rem;
+    color: #ffffff;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    min-height: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.controls button {
+    background: none;
+    border: none;
+    color: #FFA500;
+    text-decoration: underline;
+    font-family: inherit;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+.image-box img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.random-trigger {
+    margin-top: 20px;
+    margin-bottom: 50px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<header>kurtbira.net</header>
+
+<div class="counter">#<span id="counter">1</span></div>
+
+<div class="controls">
+    <button id="prevBtn" onclick="prev()">önceki</button>
+    <button id="nextBtn" onclick="next()">sonraki</button>
+</div>
+
+<div class="image-box">
+    <img id="img" src="">
+</div>
+
+<div class="random-trigger" onclick="randomImg()">rastgele</div>
+
+<script>
+// Fotoğraf listeni buraya dosya adlarını yazarak EKLE:
+const images = [
+    "resim1.jpg", 
+    "resim2.png", 
+    "resim3.jpg",
+    "kurt.jpg"
+];
+
+let currentIndex = 0;
+
+window.onload = function() {
+    // Eğer birisi kurtbira.net/3 gibi girerse o resme git, yoksa rastgele aç
+    const path = window.location.pathname.replace('/', '');
+    const pathIndex = parseInt(path) - 1;
+
+    if (!isNaN(pathIndex) && pathIndex >= 0 && pathIndex < images.length) {
+        currentIndex = pathIndex;
+        updateDisplay();
+    } else {
+        randomImg();
+    }
+};
+
+function updateDisplay() {
+    const imgElement = document.getElementById("img");
+    const counterElement = document.getElementById("counter");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    // Resim yolunu klasörden okur
+    imgElement.src = images[currentIndex];
+    counterElement.innerText = currentIndex + 1;
+
+    // URL'yi kurtbira.net/1 gibi günceller
+    const newPath = "/" + (currentIndex + 1);
+    window.history.pushState({ path: newPath }, '', newPath);
+
+    // Buton gizleme mantığı
+    if (currentIndex === 0) {
+        prevBtn.classList.add("hidden");
+    } else {
+        prevBtn.classList.remove("hidden");
+    }
+
+    if (currentIndex === images.length - 1) {
+        nextBtn.classList.add("hidden");
+    } else {
+        nextBtn.classList.remove("hidden");
+    }
+}
+
+function next() {
+    if (currentIndex < images.length - 1) {
+        currentIndex++;
+        updateDisplay();
+    }
+}
+
+function prev() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        updateDisplay();
+    }
+}
+
+function randomImg() {
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * images.length);
+    } while (randomIndex === currentIndex && images.length > 1);
+    
+    currentIndex = randomIndex;
+    updateDisplay();
+}
+</script>
+
+</body>
+</html>
