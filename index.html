@@ -1,164 +1,189 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>kurtbira.net</title> 
-<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kurtbira.net</title>
+    <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
-<style>
-/* GENEL SAYFA DÜZENİ (LAYOUT) */
-body {
-    margin: 0;
-    background: #000;
-    font-family: 'PT Serif', serif;
-    font-weight: 700; 
-    font-style: italic;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+    <style>
+        /* GENEL SAYFA DÜZENİ */
+        body {
+            margin: 0;
+            background: #000;
+            font-family: 'PT Serif', serif;
+            font-weight: 700; 
+            font-style: italic;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden; /* Mobilde sağa kaymayı önler */
+        }
 
-/* BAŞLIK VE METİN STİLLERİ */
-header {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 2rem;
-    color: #00FF00;
-}
+        /* BAŞLIK VE METİN STİLLERİ */
+        header {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            color: #00FF00;
+            text-align: center;
+        }
 
-.counter {
-    margin-bottom: 15px;
-    font-size: 1.7rem;
-    color: #ffffff;
-}
+        .counter {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: #ffffff;
+        }
 
-/* NAVİGASYON BUTONLARI (CSS) */
-.controls button {
-    background: none;
-    border: none;
-    color: #FFA500;
-    text-decoration: underline;
-    font-family: inherit;
-    font-size: 1rem;
-    cursor: pointer;
-    margin: 0 10px;
-}
+        /* NAVİGASYON BUTONLARI */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
 
-/* DURUM KONTROLÜ */
-.hidden {
-    display: none;
-}
+        .controls button {
+            background: none;
+            border: none;
+            color: #FFA500;
+            text-decoration: underline;
+            font-family: inherit;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 5px 10px; /* Dokunmatik alanını genişletir */
+        }
 
-/* MEDYA KONTEYNERI */
-.image-box img {
-    max-width: 95vw;
-    max-height: 75vh; 
-    object-fit: contain; 
-    height: auto;
-    display: block;
-}
+        .hidden {
+            display: none;
+        }
 
-/* ALT TETİKLEYİCİ STİLİ */
-.random-trigger {
-    margin-top: 20px;
-    margin-bottom: 50px;
-    color: #ffffff;
-    cursor: pointer;
-    font-size: 0.8rem;
-    text-decoration: underline;
-}
-</style>
+        /* MEDYA KONTEYNERI */
+        .image-box {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .image-box img {
+            max-width: 100%; /* Mobilde ekrana sığdırır */
+            max-height: 70vh; /* Dikeyde ekranın %70'ini geçmez */
+            object-fit: contain; 
+            height: auto;
+            display: block;
+        }
+
+        /* ALT TETİKLEYİCİ STİLİ */
+        .random-trigger {
+            margin-top: 25px;
+            margin-bottom: 50px;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        /* MASAÜSTÜ İÇİN ÖZEL DÜZENLEME */
+        @media (min-width: 768px) {
+            header { font-size: 2.5rem; }
+            .counter { font-size: 1.8rem; }
+            .image-box img { max-height: 75vh; }
+        }
+    </style>
 </head>
 <body>
 
-<header>kurtbira.net</header>
+    <header>kurtbira.net</header>
 
-<div class="counter">#<span id="counter">1</span></div>
+    <div class="counter">#<span id="counter">1</span></div>
 
-<div class="controls">
-    <button id="prevBtn" onclick="prev()">önceki</button>
-    <button id="nextBtn" onclick="next()">sonraki</button>
-</div>
+    <div class="controls">
+        <button id="prevBtn" onclick="prev()">önceki</button>
+        <button id="nextBtn" onclick="next()">sonraki</button>
+    </div>
 
-<div class="image-box">
-    <img id="img" src="">
-</div>
+    <div class="image-box">
+        <img id="img" src="" alt="Kurtbira Görseli">
+    </div>
 
-<div class="random-trigger" onclick="randomImg()">rastgele</div>
+    <div id="randomTrigger" class="random-trigger" onclick="randomImg()">rastgele</div>
 
-<script>
-/* VERİ KAYNAĞI */
-const images = [
-    "1.png", 
-    "2.png", 
-    "3.png",
-    "4.png"
-];
+    <script>
+        /* GÖRSEL LİSTESİ */
+        const images = [
+            "1.png", 
+            "2.png", 
+            "3.png",
+            "4.png"
+        ];
 
-/* STATE (DURUM) YÖNETİMİ */
-let currentIndex = 0;
+        let currentIndex = 0;
 
-/* INITIALIZATION */
-window.onload = function() {
-    const path = window.location.pathname.replace('/', '');
-    const pathIndex = parseInt(path) - 1;
+        /* SAYFA YÜKLENDİĞİNDE ÇALIŞACAK MANTIK */
+        window.onload = function() {
+            const path = window.location.pathname.replace('/', '');
+            const pathIndex = parseInt(path) - 1;
 
-    if (!isNaN(pathIndex) && pathIndex >= 0 && pathIndex < images.length) {
-        currentIndex = pathIndex;
-        updateDisplay();
-    } else {
-        randomImg();
-    }
-};
+            // Eğer URL'de geçerli bir sayı varsa onu aç, yoksa rastgele başla
+            if (!isNaN(pathIndex) && pathIndex >= 0 && pathIndex < images.length) {
+                currentIndex = pathIndex;
+                updateDisplay();
+            } else {
+                randomImg();
+            }
+        };
 
-/* UI UPDATE: URL değişir ama sekme başlığı kurtbira.net kalır */
-function updateDisplay() {
-    const imgElement = document.getElementById("img");
-    const counterElement = document.getElementById("counter");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
+        /* UI GÜNCELLEME */
+        function updateDisplay() {
+            const imgElement = document.getElementById("img");
+            const counterElement = document.getElementById("counter");
+            const prevBtn = document.getElementById("prevBtn");
+            const nextBtn = document.getElementById("nextBtn");
 
-    // Görseli ve sayacı güncelle
-    imgElement.src = images[currentIndex];
-    counterElement.innerText = currentIndex + 1;
+            // İçeriği güncelle
+            imgElement.src = images[currentIndex];
+            counterElement.innerText = currentIndex + 1;
 
-    // Adres çubuğundaki URL'yi güncelle (kurtbira.net/2 gibi)
-    const newPath = "/" + (currentIndex + 1);
-    window.history.pushState({ path: newPath }, '', newPath);
+            // URL'yi güncelle (Adres çubuğunda /2, /3 yazar)
+            const newPath = "/" + (currentIndex + 1);
+            window.history.pushState({ path: newPath }, '', newPath);
 
-    // Sekme başlığını her zaman sabit tut
-    document.title = "kurtbira.net";
+            // Sekme başlığını sabit tut (Sadece kurtbira.net yazar)
+            document.title = "kurtbira.net";
 
-    // Buton görünürlüğü
-    currentIndex === 0 ? prevBtn.classList.add("hidden") : prevBtn.classList.remove("hidden");
-    currentIndex === images.length - 1 ? nextBtn.classList.add("hidden") : nextBtn.classList.remove("hidden");
-}
+            // Butonları gizleme/gösterme mantığı
+            currentIndex === 0 ? prevBtn.classList.add("hidden") : prevBtn.classList.remove("hidden");
+            currentIndex === images.length - 1 ? nextBtn.classList.add("hidden") : nextBtn.classList.remove("hidden");
+        }
 
-/* NAVİGASYON FONKSİYONLARI */
-function next() {
-    if (currentIndex < images.length - 1) {
-        currentIndex++;
-        updateDisplay();
-    }
-}
+        /* NAVİGASYON */
+        function next() {
+            if (currentIndex < images.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            }
+        }
 
-function prev() {
-    if (currentIndex > 0) {
-        currentIndex--;
-        updateDisplay();
-    }
-}
+        function prev() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
+            }
+        }
 
-function randomImg() {
-    let randomIndex;
-    do {
-        randomIndex = Math.floor(Math.random() * images.length);
-    } while (randomIndex === currentIndex && images.length > 1);
-    
-    currentIndex = randomIndex;
-    updateDisplay();
-}
-</script>
+        function randomImg() {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * images.length);
+            } while (randomIndex === currentIndex && images.length > 1);
+            
+            currentIndex = randomIndex;
+            updateDisplay();
+        }
+    </script>
 
 </body>
 </html>
