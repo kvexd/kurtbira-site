@@ -2,45 +2,44 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kurtbira.net</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
     <style>
-        /* GENEL SAYFA DÜZENİ */
-        body {
+        /* KAYDIRMAYI ENGELLEYEN ANA YAPI */
+        html, body {
             margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* Kaydırma çubuklarını yok eder */
             background: #000;
             font-family: 'PT Serif', serif;
             font-weight: 700; 
             font-style: italic;
+            /* İçeriği dikeyde yaymak için flex kullanıyoruz */
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden; /* Mobilde sağa kaymayı önler */
         }
 
-        /* BAŞLIK VE METİN STİLLERİ */
         header {
-            margin-top: 20px;
-            margin-bottom: 10px;
+            margin-top: 15px;
             font-size: 1.8rem;
             color: #00FF00;
-            text-align: center;
+            flex-shrink: 0; /* Başlığın sıkışmasını engeller */
         }
 
         .counter {
-            margin-bottom: 15px;
+            margin: 10px 0;
             font-size: 1.5rem;
             color: #ffffff;
+            flex-shrink: 0;
         }
 
-        /* NAVİGASYON BUTONLARI */
         .controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
         }
 
         .controls button {
@@ -49,141 +48,125 @@
             color: #FFA500;
             text-decoration: underline;
             font-family: inherit;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
-            padding: 5px 10px; /* Dokunmatik alanını genişletir */
+            margin: 0 10px;
         }
 
         .hidden {
             display: none;
         }
 
-        /* MEDYA KONTEYNERI */
+        /* RESİM KUTUSU: Kalan tüm alanı kaplar ve resmi içine sığdırır */
         .image-box {
-            width: 100%;
+            flex-grow: 1; /* Ekrandaki boşluğu doldurur */
             display: flex;
+            align-items: center;
             justify-content: center;
-            padding: 0 10px;
+            width: 100%;
+            overflow: hidden;
+            padding: 10px;
             box-sizing: border-box;
         }
 
         .image-box img {
-            max-width: 100%; /* Mobilde ekrana sığdırır */
-            max-height: 70vh; /* Dikeyde ekranın %70'ini geçmez */
-            object-fit: contain; 
-            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* Oranı bozmadan sığdırır */
             display: block;
         }
 
-        /* ALT TETİKLEYİCİ STİLİ */
         .random-trigger {
-            margin-top: 25px;
-            margin-bottom: 50px;
+            margin-top: 10px;
+            margin-bottom: 20px;
             color: #ffffff;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             text-decoration: underline;
-            opacity: 0.8;
-        }
-
-        /* MASAÜSTÜ İÇİN ÖZEL DÜZENLEME */
-        @media (min-width: 768px) {
-            header { font-size: 2.5rem; }
-            .counter { font-size: 1.8rem; }
-            .image-box img { max-height: 75vh; }
+            flex-shrink: 0;
         }
     </style>
 </head>
 <body>
 
-    <header>kurtbira.net</header>
+<header>kurtbira.net</header>
 
-    <div class="counter">#<span id="counter">1</span></div>
+<div class="counter">#<span id="counter">1</span></div>
 
-    <div class="controls">
-        <button id="prevBtn" onclick="prev()">önceki</button>
-        <button id="nextBtn" onclick="next()">sonraki</button>
-    </div>
+<div class="controls">
+    <button id="prevBtn" onclick="prev()">önceki</button>
+    <button id="nextBtn" onclick="next()">sonraki</button>
+</div>
 
-    <div class="image-box">
-        <img id="img" src="" alt="Kurtbira Görseli">
-    </div>
+<div class="image-box">
+    <img id="img" src="">
+</div>
 
-    <div id="randomTrigger" class="random-trigger" onclick="randomImg()">rastgele</div>
+<div class="random-trigger" onclick="randomImg()">rastgele</div>
 
-    <script>
-        /* GÖRSEL LİSTESİ */
-        const images = [
-            "1.png", 
-            "2.png", 
-            "3.png",
-            "4.png"
-        ];
+<script>
+    const images = ["1.png", "2.png", "3.png", "4.png"];
+    let currentIndex = 0;
 
-        let currentIndex = 0;
+    window.onload = function() {
+        const path = window.location.pathname.replace('/', '');
+        const pathIndex = parseInt(path) - 1;
 
-        /* SAYFA YÜKLENDİĞİNDE ÇALIŞACAK MANTIK */
-        window.onload = function() {
-            const path = window.location.pathname.replace('/', '');
-            const pathIndex = parseInt(path) - 1;
-
-            // Eğer URL'de geçerli bir sayı varsa onu aç, yoksa rastgele başla
-            if (!isNaN(pathIndex) && pathIndex >= 0 && pathIndex < images.length) {
-                currentIndex = pathIndex;
-                updateDisplay();
-            } else {
-                randomImg();
-            }
-        };
-
-        /* UI GÜNCELLEME */
-        function updateDisplay() {
-            const imgElement = document.getElementById("img");
-            const counterElement = document.getElementById("counter");
-            const prevBtn = document.getElementById("prevBtn");
-            const nextBtn = document.getElementById("nextBtn");
-
-            // İçeriği güncelle
-            imgElement.src = images[currentIndex];
-            counterElement.innerText = currentIndex + 1;
-
-            // URL'yi güncelle (Adres çubuğunda /2, /3 yazar)
-            const newPath = "/" + (currentIndex + 1);
-            window.history.pushState({ path: newPath }, '', newPath);
-
-            // Sekme başlığını sabit tut (Sadece kurtbira.net yazar)
-            document.title = "kurtbira.net";
-
-            // Butonları gizleme/gösterme mantığı
-            currentIndex === 0 ? prevBtn.classList.add("hidden") : prevBtn.classList.remove("hidden");
-            currentIndex === images.length - 1 ? nextBtn.classList.add("hidden") : nextBtn.classList.remove("hidden");
+        if (!isNaN(pathIndex) && pathIndex >= 0 && pathIndex < images.length) {
+            currentIndex = pathIndex;
+            updateDisplay();
+        } else {
+            randomImg();
         }
+    };
 
-        /* NAVİGASYON */
-        function next() {
-            if (currentIndex < images.length - 1) {
-                currentIndex++;
-                updateDisplay();
-            }
-        }
+    function updateDisplay() {
+        const imgElement = document.getElementById("img");
+        const counterElement = document.getElementById("counter");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        function prev() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateDisplay();
-            }
-        }
+        imgElement.src = images[currentIndex];
+        counterElement.innerText = currentIndex + 1;
 
-        function randomImg() {
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * images.length);
-            } while (randomIndex === currentIndex && images.length > 1);
-            
-            currentIndex = randomIndex;
+        const newPath = "/" + (currentIndex + 1);
+        window.history.pushState({ path: newPath }, '', newPath);
+
+        currentIndex === 0 ? prevBtn.classList.add("hidden") : prevBtn.classList.remove("hidden");
+        currentIndex === images.length - 1 ? nextBtn.classList.add("hidden") : nextBtn.classList.remove("hidden");
+    }
+
+    function next() {
+        if (currentIndex < images.length - 1) {
+            currentIndex++;
             updateDisplay();
         }
-    </script>
+    }
+
+    function prev() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateDisplay();
+        }
+    }
+
+    function randomImg() {
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * images.length);
+        } while (randomIndex === currentIndex && images.length > 1);
+        
+        currentIndex = randomIndex;
+        updateDisplay();
+    }
+
+    // Mobil cihazlarda ekranı aşağı çekince oluşan yenilemeyi ve kaydırmayı engeller
+    document.addEventListener('touchmove', function(e) {
+        if (e.target.tagName !== 'BUTTON') {
+            e.preventDefault();
+        }
+    }, { passive: false });
+</script>
 
 </body>
 </html>
