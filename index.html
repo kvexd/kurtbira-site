@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>kurtbira.net</title>
+    <meta name="description" content="kurtbira.net - Görsel Arşivi">
+    <meta property="og:title" content="kurtbira.net">
+    <meta property="og:description" content="Rastgele ve sıralı görsel koleksiyonu.">
+    <meta property="og:image" content="https://kurtbira.net/1.png"> <meta property="og:url" content="https://kurtbira.net">
+    <meta name="theme-color" content="#00FF00"> <meta property="og:type" content="website">
+
     <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
     <style>
@@ -89,18 +97,17 @@
             text-decoration: underline;
         }
 
-        /* İSTEDİĞİN DİSCORD BUTONU STİLİ */
         .discord-link {
             margin-top: 12px;
-            color: #FFA500; /* Turuncu renk */
+            color: #FFA500;
             font-size: 0.9rem;
-            text-decoration: none; /* Alt çizgi kaldırıldı */
+            text-decoration: none;
             cursor: pointer;
             transition: opacity 0.2s;
         }
 
         .discord-link:hover {
-            opacity: 0.8; /* Üzerine gelince hafif şeffaflık efekti */
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -180,7 +187,6 @@
         updateDisplay();
     }
 
-    // Kaydırma engelleme
     document.addEventListener('touchmove', function(e) {
         if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
             e.preventDefault();
