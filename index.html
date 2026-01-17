@@ -54,7 +54,16 @@ header {
 }
 
 .image-box img {
-    max-width: 100%;
+    /* Genişliğin ekranı taşmasını engeller */
+    max-width: 95vw; 
+    
+    /* Yüksekliğin ekranı taşmasını engeller (vh = viewport height) */
+    /* 80vh diyerek üstteki başlık ve butonlar için pay bırakıyoruz */
+    max-height: 75vh; 
+    
+    /* Resmin oranını bozmadan sığdırır */
+    object-fit: contain; 
+    
     height: auto;
     display: block;
 }
@@ -169,5 +178,6 @@ function randomImg() {
 </body>
 
 </html>
+
 
 
