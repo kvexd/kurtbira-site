@@ -6,18 +6,16 @@
     <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
     <style>
-        /* KAYDIRMAYI ENGELLEYEN ANA YAPI */
         html, body {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
-            overflow: hidden; /* Kaydırma çubuklarını yok eder */
+            overflow: hidden;
             background: #000;
             font-family: 'PT Serif', serif;
             font-weight: 700; 
             font-style: italic;
-            /* İçeriği dikeyde yaymak için flex kullanıyoruz */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -27,18 +25,18 @@
             margin-top: 15px;
             font-size: 1.8rem;
             color: #00FF00;
-            flex-shrink: 0; /* Başlığın sıkışmasını engeller */
+            flex-shrink: 0;
         }
 
         .counter {
-            margin: 10px 0;
+            margin: 5px 0;
             font-size: 1.5rem;
             color: #ffffff;
             flex-shrink: 0;
         }
 
         .controls {
-            margin-bottom: 10px;
+            margin-bottom: 0.8rem; 
             flex-shrink: 0;
         }
 
@@ -57,33 +55,52 @@
             display: none;
         }
 
-        /* RESİM KUTUSU: Kalan tüm alanı kaplar ve resmi içine sığdırır */
         .image-box {
-            flex-grow: 1; /* Ekrandaki boşluğu doldurur */
+            flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
             overflow: hidden;
-            padding: 10px;
+            padding: 5px;
             box-sizing: border-box;
         }
 
         .image-box img {
             max-width: 100%;
             max-height: 100%;
-            object-fit: contain; /* Oranı bozmadan sığdırır */
+            object-fit: contain;
             display: block;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-shrink: 0;
         }
 
         .random-trigger {
             margin-top: 10px;
-            margin-bottom: 20px;
             color: #ffffff;
             cursor: pointer;
             font-size: 0.8rem;
             text-decoration: underline;
-            flex-shrink: 0;
+        }
+
+        /* İSTEDİĞİN DİSCORD BUTONU STİLİ */
+        .discord-link {
+            margin-top: 12px;
+            color: #FFA500; /* Turuncu renk */
+            font-size: 0.9rem;
+            text-decoration: none; /* Alt çizgi kaldırıldı */
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .discord-link:hover {
+            opacity: 0.8; /* Üzerine gelince hafif şeffaflık efekti */
         }
     </style>
 </head>
@@ -102,7 +119,10 @@
     <img id="img" src="">
 </div>
 
-<div class="random-trigger" onclick="randomImg()">rastgele</div>
+<div class="footer-links">
+    <div class="random-trigger" onclick="randomImg()">rastgele</div>
+    <a href="https://discord.gg/bdmNzRr5MU" target="_blank" class="discord-link">discord</a>
+</div>
 
 <script>
     const images = ["1.png", "2.png", "3.png", "4.png"];
@@ -160,9 +180,9 @@
         updateDisplay();
     }
 
-    // Mobil cihazlarda ekranı aşağı çekince oluşan yenilemeyi ve kaydırmayı engeller
+    // Kaydırma engelleme
     document.addEventListener('touchmove', function(e) {
-        if (e.target.tagName !== 'BUTTON') {
+        if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'A') {
             e.preventDefault();
         }
     }, { passive: false });
